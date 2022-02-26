@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06081A4D27C9CBD000D64045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		061E3A3627AB998C00561178 /* framerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = framerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		061E3A3927AB998C00561178 /* framerateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = framerateApp.swift; sourceTree = "<group>"; };
 		061E3A3B27AB998C00561178 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 		061E3A3827AB998C00561178 /* framerate */ = {
 			isa = PBXGroup;
 			children = (
+				06081A4D27C9CBD000D64045 /* Info.plist */,
 				061E3A3927AB998C00561178 /* framerateApp.swift */,
 				061E3A3B27AB998C00561178 /* ContentView.swift */,
 				061E3A3D27AB998E00561178 /* Assets.xcassets */,
@@ -272,6 +274,7 @@
 				DEVELOPMENT_TEAM = Z48HR73829;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = framerate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -301,6 +304,7 @@
 				DEVELOPMENT_TEAM = Z48HR73829;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = framerate/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
