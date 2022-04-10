@@ -8,9 +8,15 @@
 import SwiftUI
 
 class ToggleWithCADisplayLink : NSObject, ObservableObject {
-    @Published var showBlack: Bool = false
+    @State var interval: Double = 1.0
+    
+    @Published var showBase: Bool = false
     @Published var actualFramesPerSecond: Double = 0
     @Published var countDownSecondString: String = "5"
+    
+    init(interval: Double) {
+        self.interval = interval
+    }
     
     var minimum: Float = 8
     var maximum: Float = 15
@@ -33,7 +39,7 @@ class ToggleWithCADisplayLink : NSObject, ObservableObject {
         progress = 0
         previousTargetTimestamp = 0
         countDownSecond = 5
-        showBlack = false
+        showBase = false
     }
 
     @objc func step(link: CADisplayLink) {
@@ -51,8 +57,8 @@ class ToggleWithCADisplayLink : NSObject, ObservableObject {
             countDownSecondString = "\(round(10 * countDownSecond) / 10.0)"
         } else {
             countDownSecondString = ""
-            if progress > 1 {
-                showBlack.toggle()
+            if progress > self.interval {
+                showBase.toggle()
                 progress = 0
             }
         }
@@ -60,27 +66,32 @@ class ToggleWithCADisplayLink : NSObject, ObservableObject {
 }
 
 struct SecondView: View {
+    @State var baseColor: Color = .black
     @State var color: Color = .red
     @State var minimum: Float = 8
     @State var maximum: Float = 15
     @State var preferred: Float = 10
-    
-    @ObservedObject var animation = ToggleWithCADisplayLink()
+    @ObservedObject var animation = ToggleWithCADisplayLink(interval: 1)
     
     var body: some View {
         ZStack {
             VStack {
+                Spacer()
+                    .frame(height: 150)
+                    .background(Color.yellow)
                 Text(animation.countDownSecondString)
+                    .font(.system(size: 28))
                     .foregroundColor(.yellow)
                 Text("Actual Frame Rate: \(animation.actualFramesPerSecond)")
+                    .font(.system(size: 28))
                     .foregroundColor(.yellow)
             }.zIndex(10)
             Rectangle()
                 .foregroundColor(color)
-                .zIndex(animation.showBlack ? 1 : 0)
+                .zIndex(animation.showBase ? 1 : 0)
             Rectangle()
-                .foregroundColor(.black)
-                .zIndex(animation.showBlack ? 0 : 1)
+                .foregroundColor(baseColor)
+                .zIndex(animation.showBase ? 0 : 1)
         }.frame(width: 400, height: 960)
             .onAppear {
                 animation.minimum = minimum
@@ -95,38 +106,77 @@ struct SecondView: View {
 }
 
 struct ContentView: View {
+    @State private var color_1_r: String = "255"
+    @State private var color_1_g: String = "255"
+    @State private var color_1_b: String = "255"
+    @State private var color_2_r: String = "0"
+    @State private var color_2_g: String = "0"
+    @State private var color_2_b: String = "0"
+    
     @State private var minimum: String = "8"
     @State private var maximum: String = "15"
     @State private var preferred: String = "10"
+    @State private var interval: String = "1"
+    
     var body: some View {
         NavigationView {
             VStack {
-                Text("minimum: default 8")
-                TextField("minimum: default 8", text: $minimum)
-                    .frame(width: 200, height: 30, alignment: .center)
-                    .textFieldStyle(.roundedBorder)
-                Text("maximum: default 15")
-                TextField("maximum: default 15", text: $maximum)
-                    .frame(width: 200, height: 30, alignment: .center)
-                    .textFieldStyle(.roundedBorder)
-                Text("preferred: default 10")
-                TextField("preferred: default 10", text: $preferred)
-                    .frame(width: 200, height: 30, alignment: .center)
-                    .textFieldStyle(.roundedBorder)
-                NavigationLink(destination: SecondView(color: .red, minimum: Float(minimum) ?? 8, maximum: Float(maximum) ?? 15, preferred: Float(preferred) ?? 10, animation: ToggleWithCADisplayLink())) {
-                    Text("黑红1s交替")
+                Group {
+                    Group {
+                        Text("Color_1 R G B")
+                        HStack{
+                            TextField("255", text: $color_1_r)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("255", text: $color_1_g)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("255", text: $color_1_b)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        Text("Color_2 R G B")
+                        HStack{
+                            TextField("0", text: $color_2_r)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("0", text: $color_2_g)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("0", text: $color_2_b)
+                                .frame(width: 60, height: 30, alignment: .center)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                    }
+                    Spacer()
+                        .frame(height: 50)
+                    Text("minimum: default 8")
+                    TextField("minimum: default 8", text: $minimum)
+                        .frame(width: 200, height: 30, alignment: .center)
+                        .textFieldStyle(.roundedBorder)
+                    Text("maximum: default 15")
+                    TextField("maximum: default 15", text: $maximum)
+                        .frame(width: 200, height: 30, alignment: .center)
+                        .textFieldStyle(.roundedBorder)
+                    Text("preferred: default 10")
+                    TextField("preferred: default 10", text: $preferred)
+                        .frame(width: 200, height: 30, alignment: .center)
+                        .textFieldStyle(.roundedBorder)
+                    Text("interval: default 1")
+                    TextField("interval: default 1", text: $interval)
+                        .frame(width: 200, height: 30, alignment: .center)
+                        .textFieldStyle(.roundedBorder)
                 }
-                .navigationTitle("Navigation")
-                NavigationLink(destination: SecondView(color: .green, minimum: Float(minimum) ?? 8, maximum: Float(maximum) ?? 15, preferred: Float(preferred) ?? 10, animation: ToggleWithCADisplayLink())) {
-                    Text("黑绿1s交替")
-                }
-                .navigationTitle("Navigation")
-                NavigationLink(destination: SecondView(color: .blue, minimum: Float(minimum) ?? 8, maximum: Float(maximum) ?? 15, preferred: Float(preferred) ?? 10, animation: ToggleWithCADisplayLink())) {
-                    Text("黑蓝1s交替")
-                }
-                .navigationTitle("Navigation")
-                NavigationLink(destination: SecondView(color: .white, minimum: Float(minimum) ?? 8, maximum: Float(maximum) ?? 15, preferred: Float(preferred) ?? 10, animation: ToggleWithCADisplayLink())) {
-                    Text("黑白1s交替")
+                Spacer()
+                    .frame(height: 50)
+                NavigationLink(destination: SecondView(
+                    baseColor: Color(red: (Double(color_1_r) ?? 0)/255.0, green: (Double(color_1_g) ?? 0)/255.0, blue: (Double(color_1_b) ?? 0)/255.0),
+                    color: Color(red: (Double(color_2_r) ?? 0)/255.0, green: (Double(color_2_g) ?? 0)/255.0, blue: (Double(color_2_b) ?? 0)/255.0),
+                    minimum: Float(minimum) ?? 8,
+                    maximum: Float(maximum) ?? 15,
+                    preferred: Float(preferred) ?? 10,
+                    animation: ToggleWithCADisplayLink(interval: Double(interval) ?? 1.0))) {
+                    Text("开始")
                 }
                 .navigationTitle("Navigation")
             }
